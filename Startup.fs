@@ -11,6 +11,8 @@ open Microsoft.AspNetCore.Mvc
 open Microsoft.Extensions.Configuration
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
+open Types
+open System.Collections
 
 type Startup private () =
     new (configuration: IConfiguration) as this =
@@ -21,6 +23,10 @@ type Startup private () =
     member this.ConfigureServices(services: IServiceCollection) =
         // Add framework services.
         services.AddControllers() |> ignore
+
+        let inMemory = Hashtable()
+        let test = fun () -> InMemoryStorage.createAccount inMemory
+        services.AddSingleton<CreateAccount>(test) |> ignore
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     member this.Configure(app: IApplicationBuilder, env: IWebHostEnvironment) =
