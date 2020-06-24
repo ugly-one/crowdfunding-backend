@@ -8,8 +8,6 @@ open Microsoft.AspNetCore.Mvc
 open Microsoft.Extensions.Logging
 open Types
 
-
-
 [<ApiController>]
 type AccountController 
     (   createAccount : CreateAccount, 

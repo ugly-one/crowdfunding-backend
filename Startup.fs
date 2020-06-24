@@ -24,13 +24,17 @@ type Startup private () =
         // Add framework services.
         services.AddControllers() |> ignore
 
-        let inMemory = Dictionary<AccountId, Account>()
-        let create = fun () -> InMemoryStorage.createAccount inMemory
-        let get = InMemoryStorage.getAccount inMemory
-        let update = InMemoryStorage.updateAccount inMemory
+        let accountsInMemory = Dictionary<AccountId, Account>()
+        let create = fun () -> InMemoryStorage.createAccount accountsInMemory
+        let get = InMemoryStorage.getAccount accountsInMemory
+        let update = InMemoryStorage.updateAccount accountsInMemory
         services.AddSingleton<CreateAccount>(create) |> ignore
         services.AddSingleton<GetAccount>(get) |> ignore
         services.AddSingleton<UpdateAccount>(update) |> ignore
+
+        let projectsInMemory = Dictionary<ProjectId, Project>()
+        let createProject = InMemoryStorage.createProject projectsInMemory
+        services.AddSingleton<CreateProject>(createProject) |> ignore
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     member this.Configure(app: IApplicationBuilder, env: IWebHostEnvironment) =

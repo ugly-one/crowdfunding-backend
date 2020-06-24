@@ -21,4 +21,10 @@ module InMemoryStorage
             Ok account
         with 
         | :? KeyNotFoundException -> "account with given id " + id.ToString() + " not found" |> Error;
+
+    let createProject (inMemory: Dictionary<ProjectId, Project>) name goal = 
+        let lastUsedId = inMemory.Count
+        let newProject = {Id=lastUsedId+1; Name=name; Goal=goal; Funded=0u}
+        inMemory.Add(newProject.Id, newProject)
+        newProject
             
