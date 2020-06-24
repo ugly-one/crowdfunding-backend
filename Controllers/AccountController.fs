@@ -3,6 +3,7 @@
 open Microsoft.AspNetCore.Mvc
 open Types
 open HttpHelpers
+open Investor
 
 [<ApiController>]
 type AccountController 
@@ -26,12 +27,7 @@ type AccountController
     [<Route("[controller]/{id}/deposit")>]
     member __.Deposit (id: AccountId) (deposit: Deposit) : IActionResult = 
         
-        let increaseFunds deposit account = 
-            {account with Available = account.Available + deposit.Amount}
-        
-        let depositIntoAccount = increaseFunds deposit
-
         getAccount id
-            |> Result.map depositIntoAccount 
+            |> Result.map (depositIntoAccount deposit)
             |> Result.bind updateAccount
             |> intoActionResult

@@ -13,14 +13,14 @@ module InMemoryStorage
         try 
             inMemory.Item id |> Ok
         with 
-        | :? KeyNotFoundException -> "account with given id " + id.ToString() + " not found" |> Error;
+        | :? KeyNotFoundException -> "Account does not exist" |> Error;
 
     let updateAccount (inMemory : Dictionary<AccountId,Account>) account =
         try
             inMemory.[account.Id] <- account
             Ok account
         with 
-        | :? KeyNotFoundException -> "account with given id " + id.ToString() + " not found" |> Error;
+        | :? KeyNotFoundException -> "Account does not exist" |> Error;
 
     let createProject (inMemory: Dictionary<ProjectId, Project>) name goal = 
         let lastUsedId = inMemory.Count
@@ -32,4 +32,11 @@ module InMemoryStorage
         try 
             inMemory.Item id |> Ok
         with 
-        | :? KeyNotFoundException -> "project with given id " + id.ToString() + " not found" |> Error;
+        | :? KeyNotFoundException -> "Project does not exist" |> Error;
+
+    let updateProject (inMemory : Dictionary<ProjectId,Project>) (project:Project) =
+        try
+            inMemory.[project.Id] <- project
+            Ok project
+        with 
+        | :? KeyNotFoundException -> "Project does not exist" |> Error;

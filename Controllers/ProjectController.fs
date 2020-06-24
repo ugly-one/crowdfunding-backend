@@ -3,6 +3,7 @@ namespace crowdfunding_backend.Controllers
 open Microsoft.AspNetCore.Mvc
 open Types
 open HttpHelpers
+open Investor
 
 [<CLIMutable>]
 type CreateProjectRequest = {
@@ -10,8 +11,20 @@ type CreateProjectRequest = {
     Goal: uint32
 }
 
+[<CLIMutable>]
+type InvestRequest = {
+    AcountId: AccountId
+    Amount: uint32
+}
+
 [<ApiController>]
-type ProjectController (createProject: CreateProject, getProject: GetProject) =
+type ProjectController 
+    (createProject: CreateProject, 
+    getProject: GetProject, 
+    updateProject: UpdateProject,
+    getAccount : GetAccount,
+    updateAccount: UpdateAccount
+    ) =
     inherit ControllerBase()
 
     [<HttpPost>]
@@ -24,3 +37,17 @@ type ProjectController (createProject: CreateProject, getProject: GetProject) =
     member __.Get id : IActionResult = 
         let project = getProject id
         intoActionResult project
+
+    [<HttpPost>]
+    [<Route("[Controller]/{id}/invest")>]
+    member __.Invest (id: ProjectId) (request : InvestRequest) : IActionResult =
+
+        let account = getAccount request.AcountId
+        let project = getProject id
+        let updateAccountProjectInStorage = updateAccountAndProject updateAccount updateProject
+        
+        resultMerge account project 
+                    |> Result.bind (investAndDeduct request.Amount)
+                    |> Result.bind updateAccountProjectInStorage
+                    |> Result.map (fun (_,project) -> project)
+                    |> intoActionResult

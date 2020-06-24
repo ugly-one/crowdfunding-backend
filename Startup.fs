@@ -35,9 +35,10 @@ type Startup private () =
         let projectsInMemory = Dictionary<ProjectId, Project>()
         let createProject = InMemoryStorage.createProject projectsInMemory
         let getProject = InMemoryStorage.getProject projectsInMemory
+        let updateProject = InMemoryStorage.updateProject projectsInMemory
         services.AddSingleton<CreateProject>(createProject) |> ignore
         services.AddSingleton<GetProject>(getProject) |> ignore
-
+        services.AddSingleton<UpdateProject>(updateProject) |> ignore
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     member this.Configure(app: IApplicationBuilder, env: IWebHostEnvironment) =
