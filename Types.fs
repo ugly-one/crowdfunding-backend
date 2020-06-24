@@ -29,3 +29,4 @@ open System.Collections
     type UpdateAccount = Account -> Result<Account, string>    
 
     type CreateProject = ProjectName -> uint32 -> Project
+    type GetProject = ProjectId -> Result<Project,string>

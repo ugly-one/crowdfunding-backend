@@ -28,3 +28,8 @@ module InMemoryStorage
         inMemory.Add(newProject.Id, newProject)
         newProject
             
+    let getProject (inMemory: Dictionary<ProjectId, Project>) id = 
+        try 
+            inMemory.Item id |> Ok
+        with 
+        | :? KeyNotFoundException -> "project with given id " + id.ToString() + " not found" |> Error;

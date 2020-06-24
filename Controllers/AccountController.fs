@@ -1,12 +1,8 @@
 ﻿namespace crowdfunding_backend.Controllers
 
-open System
-open System.Collections.Generic
-open System.Linq
-open System.Threading.Tasks
 open Microsoft.AspNetCore.Mvc
-open Microsoft.Extensions.Logging
 open Types
+open HttpHelpers
 
 [<ApiController>]
 type AccountController 
@@ -14,11 +10,6 @@ type AccountController
         getAccount : GetAccount,
         updateAccount : UpdateAccount) =
     inherit ControllerBase()
-
-    let intoActionResult result = 
-        match result with 
-        | Ok x -> JsonResult (x) :> IActionResult
-        | Error _ -> StatusCodeResult( 404 ) :> IActionResult
 
     [<HttpGet>]
     [<Route("[controller]/{id}")>]
