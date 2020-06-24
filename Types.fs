@@ -9,5 +9,7 @@ open System.Collections
         Invested: uint32
     }
 
-    type CreateAccount = unit -> Account
+    type CreateAccount = unit -> Account // TODO return Result
+
+    type GetAccount = AccountId -> Result<Account, string>
         
