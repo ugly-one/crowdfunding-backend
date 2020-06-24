@@ -9,19 +9,40 @@ open Microsoft.Extensions.Logging
 open Types
 
 
+
 [<ApiController>]
-type AccountController (logger : ILogger<AccountController>, createAccount : CreateAccount, getAccount : GetAccount) =
+type AccountController 
+    (   createAccount : CreateAccount, 
+        getAccount : GetAccount,
+        updateAccount : UpdateAccount) =
     inherit ControllerBase()
+
+    let intoActionResult result = 
+        match result with 
+        | Ok x -> JsonResult (x) :> IActionResult
+        | Error _ -> StatusCodeResult( 404 ) :> IActionResult
 
     [<HttpGet>]
     [<Route("[controller]/{id}")>]
     member __.Get (id: AccountId) : IActionResult =
         let account = getAccount id
-        match account with 
-        | Ok acc -> JsonResult (acc) :> IActionResult
-        | Error msg -> StatusCodeResult( 404 ) :> IActionResult
+        intoActionResult account
 
     [<HttpPost>]
     [<Route("create-account")>]
     member __.CreateAccount () : Account = 
         createAccount ()
+
+    [<HttpPost>]
+    [<Route("[controller]/{id}/deposit")>]
+    member __.Deposit (id: AccountId) (deposit: Deposit) : IActionResult = 
+        
+        let increaseFunds deposit account = 
+            {account with Available = account.Available + deposit.Amount}
+        
+        let depositIntoAccount = increaseFunds deposit
+
+        getAccount id
+            |> Result.map depositIntoAccount 
+            |> Result.bind updateAccount
+            |> intoActionResult

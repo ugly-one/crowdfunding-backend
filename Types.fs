@@ -9,7 +9,13 @@ open System.Collections
         Invested: uint32
     }
 
+    [<CLIMutable>]
+    type Deposit = {
+        Amount: uint32
+    }
+
     type CreateAccount = unit -> Account
 
     type GetAccount = AccountId -> Result<Account, string>
-        
+
+    type UpdateAccount = Account -> Result<Account, string>    

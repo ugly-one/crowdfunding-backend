@@ -27,8 +27,10 @@ type Startup private () =
         let inMemory = Dictionary<AccountId, Account>()
         let create = fun () -> InMemoryStorage.createAccount inMemory
         let get = InMemoryStorage.getAccount inMemory
+        let update = InMemoryStorage.updateAccount inMemory
         services.AddSingleton<CreateAccount>(create) |> ignore
         services.AddSingleton<GetAccount>(get) |> ignore
+        services.AddSingleton<UpdateAccount>(update) |> ignore
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     member this.Configure(app: IApplicationBuilder, env: IWebHostEnvironment) =
