@@ -4,6 +4,9 @@ open Microsoft.AspNetCore.Mvc
 open Types
 open HttpHelpers
 open Investor
+open System.Text.Json
+open Microsoft.FSharp.Linq
+open System
 
 [<ApiController>]
 type AccountController 
@@ -14,7 +17,7 @@ type AccountController
 
     [<HttpGet>]
     [<Route("[controller]/{id}")>]
-    member __.Get (id: AccountId) : IActionResult =
+    member __.Get (id: AccountId) =
         let account = getAccount id
         intoActionResult account
 
@@ -25,7 +28,7 @@ type AccountController
 
     [<HttpPost>]
     [<Route("[controller]/{id}/deposit")>]
-    member __.Deposit (id: AccountId) (deposit: Deposit) : IActionResult = 
+    member __.Deposit (id: AccountId) (deposit: Deposit)  = 
         
         getAccount id
             |> Result.map (depositIntoAccount deposit)

@@ -29,18 +29,18 @@ type ProjectController
 
     [<HttpPost>]
     [<Route("create-project")>]
-    member __.Create request : IActionResult =
+    member __.Create request =
         JsonResult(createProject request.Name request.Goal) :> IActionResult
 
     [<HttpGet>]
     [<Route("[Controller]/{id}")>]
-    member __.Get id : IActionResult = 
+    member __.Get id  = 
         let project = getProject id
         intoActionResult project
 
     [<HttpPost>]
     [<Route("[Controller]/{id}/invest")>]
-    member __.Invest (id: ProjectId) (request : InvestRequest) : IActionResult =
+    member __.Invest (id: ProjectId) (request : InvestRequest) =
 
         let account = getAccount request.AcountId
         let project = getProject id

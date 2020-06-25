@@ -1,6 +1,8 @@
 module HttpHelpers
     
     open Microsoft.AspNetCore.Mvc
+    open System
+    open System.Text.Json
 
     type ErrorMessage = {
         Error: string
@@ -8,9 +10,10 @@ module HttpHelpers
 
     let intoActionResult result = 
         match result with 
-        | Ok x -> JsonResult (x) :> IActionResult
-        | Error msg -> JsonResult {Error=msg} :> IActionResult
+        | Ok x -> ContentResult (Content= JsonSerializer.Serialize(x))
+        | Error msg -> ContentResult (Content= JsonSerializer.Serialize<ErrorMessage>({Error= msg}), StatusCode= Nullable 404)
 
+    // TODO this should be in some general module
     let resultMerge r1 r2 = 
         match r2 with 
         | Error msg -> Error msg
