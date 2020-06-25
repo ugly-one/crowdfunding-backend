@@ -6,17 +6,19 @@ module Investor
         {account with Available = account.Available + deposit.Amount}
 
     let investAndDeduct amount (account,project) = 
-        let invest amount project = 
+        let investIntoProject amount project = 
             let missingAmount = project.Goal - project.Funded
             if amount > missingAmount 
             then Error InvestError.InvestingTooMuch 
             else Ok {project with Funded = project.Funded + amount}
 
-        let deductFromAccount amount account = 
-            if account.Available < amount then Error InvestError.InsufficientFunds else {account with Available = account.Available - amount} |> Ok
+        let investFromAccount amount account = 
+            if account.Available < amount 
+            then Error InvestError.InsufficientFunds 
+            else {account with Available = account.Available - amount; Invested = account.Invested + amount} |> Ok
 
-        let project = invest amount project
-        let account = deductFromAccount amount account
+        let project = investIntoProject amount project
+        let account = investFromAccount amount account
         resultMerge account project
 
     let updateAccountAndProject updateAccount updateProject (account,project) : Result<(Account*Project),GeneralError>= 
