@@ -1,6 +1,8 @@
 module Types 
 open System.Collections
 
+    [<Measure>] type DKK
+
     type InvestError = 
         | InsufficientFunds
         | InvestingTooMuch
@@ -19,27 +21,27 @@ open System.Collections
     type Project = {
         Id: ProjectId
         Name: ProjectName
-        Goal: uint32 // TODO perhaps it could have it's own type with some validation to prevent insanly huge goals
-        Funded: uint32 // TODO how to make sure it's not possible to collect more than the goal?
+        Goal: decimal<DKK> // perhaps it could have it's own type with some validation to prevent insanly huge goals
+        Funded: decimal<DKK>
     }
 
     type AccountId = int
 
     type Account = {
         Id : AccountId
-        Available: uint32
-        Invested: uint32
+        Available: decimal<DKK>
+        Invested: decimal<DKK>
     }
 
     [<CLIMutable>]
     type Deposit = {
-        Amount: uint32
+        Amount: decimal<DKK>
     }
 
     type CreateAccount = unit -> Account
     type GetAccount = AccountId -> Result<Account, GeneralError>
     type UpdateAccount = Account -> Result<Account, GeneralError>    
 
-    type CreateProject = ProjectName -> uint32 -> Project
+    type CreateProject = ProjectName -> decimal<DKK> -> Project
     type GetProject = ProjectId -> Result<Project, GeneralError>
     type UpdateProject = Project -> Result<Project, GeneralError>

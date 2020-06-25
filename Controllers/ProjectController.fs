@@ -8,13 +8,13 @@ open Investor
 [<CLIMutable>]
 type CreateProjectRequest = {
     Name: ProjectName
-    Goal: uint32
+    Goal: decimal<DKK>
 }
 
 [<CLIMutable>]
 type InvestRequest = {
     AcountId: AccountId
-    Amount: uint32
+    Amount: decimal<DKK>
 }
 
 [<ApiController>]

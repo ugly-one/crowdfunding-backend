@@ -5,7 +5,7 @@ module InMemoryStorage
 
     let createAccount (inMemory : Dictionary<AccountId,Account>) =
         let lastUsedId = inMemory.Count
-        let newAccount = {Id=lastUsedId+1; Available=0u; Invested=0u}
+        let newAccount = {Id=lastUsedId+1; Available=0.0m<DKK>; Invested=0.0m<DKK>}
         inMemory.Add(newAccount.Id, newAccount) |> ignore
         newAccount
 
@@ -24,7 +24,7 @@ module InMemoryStorage
 
     let createProject (inMemory: Dictionary<ProjectId, Project>) name goal = 
         let lastUsedId = inMemory.Count
-        let newProject = {Id=lastUsedId+1; Name=name; Goal=goal; Funded=0u}
+        let newProject = {Id=lastUsedId+1; Name=name; Goal=goal; Funded=0.0m<DKK>}
         inMemory.Add(newProject.Id, newProject)
         newProject
             
