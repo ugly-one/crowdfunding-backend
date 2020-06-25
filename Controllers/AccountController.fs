@@ -2,7 +2,7 @@
 
 open Microsoft.AspNetCore.Mvc
 open Types
-open HttpHelpers
+open ResultExtensions
 open Investor
 open System.Text.Json
 open Microsoft.FSharp.Linq
@@ -18,8 +18,9 @@ type AccountController
     [<HttpGet>]
     [<Route("[controller]/{id}")>]
     member __.Get (id: AccountId) =
-        let account = getAccount id
-        intoActionResult account
+        getAccount id
+            |> Result.mapError GeneralError 
+            |> resultIntoContentResult
 
     [<HttpPost>]
     [<Route("create-account")>]
@@ -29,8 +30,8 @@ type AccountController
     [<HttpPost>]
     [<Route("[controller]/{id}/deposit")>]
     member __.Deposit (id: AccountId) (deposit: Deposit)  = 
-        
         getAccount id
             |> Result.map (depositIntoAccount deposit)
             |> Result.bind updateAccount
-            |> intoActionResult
+            |> Result.mapError GeneralError
+            |> resultIntoContentResult

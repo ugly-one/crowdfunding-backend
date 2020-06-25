@@ -1,6 +1,18 @@
 module Types 
 open System.Collections
 
+    type InvestError = 
+        | InsufficientFunds
+        | InvestingTooMuch
+        
+    type GeneralError = 
+        | ProjectNotFound
+        | AccountNotFound
+
+    type ResultError = 
+        | InvestError of InvestError
+        | GeneralError of GeneralError
+
     type ProjectId = int
     type ProjectName = string
 
@@ -25,9 +37,9 @@ open System.Collections
     }
 
     type CreateAccount = unit -> Account
-    type GetAccount = AccountId -> Result<Account, string>
-    type UpdateAccount = Account -> Result<Account, string>    
+    type GetAccount = AccountId -> Result<Account, GeneralError>
+    type UpdateAccount = Account -> Result<Account, GeneralError>    
 
     type CreateProject = ProjectName -> uint32 -> Project
-    type GetProject = ProjectId -> Result<Project, string>
-    type UpdateProject = Project -> Result<Project, string>
+    type GetProject = ProjectId -> Result<Project, GeneralError>
+    type UpdateProject = Project -> Result<Project, GeneralError>

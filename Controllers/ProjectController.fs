@@ -2,7 +2,7 @@ namespace crowdfunding_backend.Controllers
 
 open Microsoft.AspNetCore.Mvc
 open Types
-open HttpHelpers
+open ResultExtensions
 open Investor
 
 [<CLIMutable>]
@@ -30,24 +30,27 @@ type ProjectController
     [<HttpPost>]
     [<Route("create-project")>]
     member __.Create request =
-        JsonResult(createProject request.Name request.Goal) :> IActionResult
+        createProject request.Name request.Goal
 
     [<HttpGet>]
     [<Route("[Controller]/{id}")>]
     member __.Get id  = 
-        let project = getProject id
-        intoActionResult project
+        getProject id
+            |> Result.mapError GeneralError 
+            |> resultIntoContentResult
 
     [<HttpPost>]
     [<Route("[Controller]/{id}/invest")>]
     member __.Invest (id: ProjectId) (request : InvestRequest) =
-
         let account = getAccount request.AcountId
         let project = getProject id
         let updateAccountProjectInStorage = updateAccountAndProject updateAccount updateProject
-        
+        let investAndDeduct = liftInvestError investAndDeduct request.Amount
+        let updateStorage = liftGeneralError updateAccountProjectInStorage
+
         resultMerge account project 
-                    |> Result.bind (investAndDeduct request.Amount)
-                    |> Result.bind updateAccountProjectInStorage
-                    |> Result.map (fun (_,project) -> project)
-                    |> intoActionResult
+            |> Result.mapError GeneralError
+            |> Result.bind investAndDeduct
+            |> Result.bind updateStorage
+            |> Result.map (fun (_,project) -> project) // skip the account, we want to return only the project
+            |> resultIntoContentResult

@@ -9,18 +9,18 @@ module InMemoryStorage
         inMemory.Add(newAccount.Id, newAccount) |> ignore
         newAccount
 
-    let getAccount (inMemory : Dictionary<AccountId,Account>) (id: AccountId) : Result<Account,string> = 
+    let getAccount (inMemory : Dictionary<AccountId,Account>) (id: AccountId)  = 
         try 
             inMemory.Item id |> Ok
         with 
-        | :? KeyNotFoundException -> "Account does not exist" |> Error;
+        | :? KeyNotFoundException -> AccountNotFound |> Error;
 
     let updateAccount (inMemory : Dictionary<AccountId,Account>) account =
         try
             inMemory.[account.Id] <- account
             Ok account
         with 
-        | :? KeyNotFoundException -> "Account does not exist" |> Error;
+        | :? KeyNotFoundException -> AccountNotFound |> Error;
 
     let createProject (inMemory: Dictionary<ProjectId, Project>) name goal = 
         let lastUsedId = inMemory.Count
@@ -32,11 +32,11 @@ module InMemoryStorage
         try 
             inMemory.Item id |> Ok
         with 
-        | :? KeyNotFoundException -> "Project does not exist" |> Error;
+        | :? KeyNotFoundException -> ProjectNotFound |> Error;
 
     let updateProject (inMemory : Dictionary<ProjectId,Project>) (project:Project) =
         try
             inMemory.[project.Id] <- project
             Ok project
         with 
-        | :? KeyNotFoundException -> "Project does not exist" |> Error;
+        | :? KeyNotFoundException -> ProjectNotFound |> Error;

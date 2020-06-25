@@ -6,7 +6,7 @@
   <ItemGroup>
     <Compile Include="Types.fs" />
     <Compile Include="InMemoryStorage.fs" />
-    <Compile Include="HttpHelpers.fs" />
+    <Compile Include="ResultExtensions.fs" />
     <Compile Include="Investor.fs" />
     <Compile Include="Controllers/AccountController.fs" />
     <Compile Include="Controllers/ProjectController.fs" />
